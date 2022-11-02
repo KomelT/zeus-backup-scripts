@@ -1,7 +1,5 @@
 #!/usr/bin/bash
 
-echo $BACKB_KEY_ID >> /root/test.log 
-
 # backup name
 name="video-cdn-ad4u"
 
