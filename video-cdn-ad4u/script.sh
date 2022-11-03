@@ -26,6 +26,7 @@ fi
 
 
 # ------------------------------- BACKUP START
+docker exec --user www-data nextcloud php occ maintenance:mode --on
 
 
 # backup db to .sql
@@ -60,6 +61,7 @@ else
     fi
 fi
 
+docker exec --user www-data nextcloud php occ maintenance:mode --off
 # ------------------------------- BACKUP END
 
 
