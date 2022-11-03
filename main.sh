@@ -15,10 +15,10 @@ tmp=""
 /root/zeus-docker-backup-scripts/video-cdn-ad4u/script.sh
 if [[ $? -ne 0 ]]; then
     echo "video-cdn-ad4u/script.sh exited with a non zero exit code" >> "${tmp_folder}/logs.txt"
-    tmp='{"title": "video-cdn-ad4u", "description": "NOK! Please check logs.", "color": 16711680}'
+    tmp='{"title": "video-cdn-ad4u", "color": 16711680}'
 else
     echo "video-cdn-ad4u/script.sh exited with a zero exit code" >> "${tmp_folder}/logs.txt"
-    tmp='{"title": "video-cdn-ad4u", "description": "OK!", "color": 65280}'
+    tmp='{"title": "video-cdn-ad4u", "color": 65280}'
 fi
 content="${content}${tmp},"
 
@@ -26,10 +26,10 @@ content="${content}${tmp},"
 /root/zeus-docker-backup-scripts/passbolt/script.sh
 if [[ $? -ne 0 ]]; then
     echo "passbolt/script.sh exited with a non zero exit code" >> "${tmp_folder}/logs.txt"
-    tmp='{"title": "passbolt", "description": "NOK! Please check logs.", "color": 16711680}'
+    tmp='{"title": "passbolt", "color": 16711680}'
 else
     echo "passbolt/script.sh exited with a zero exit code" >> "${tmp_folder}/logs.txt"
-    tmp='{"title": "passbolt", "description": "OK!", "color": 65280}'
+    tmp='{"title": "passbolt", "color": 65280}'
 fi
 content="${content}${tmp}"
 
