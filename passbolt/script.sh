@@ -72,6 +72,13 @@ if [[ $? -ne 0 ]]; then
 fi
 
 
+# backup docker-compose.yaml
+b2 upload-file zeus-docker-backup "/home/komelt/git-repos/boilerplates/passbolt/production.yaml" "${name}/${date}/docker-composebkp_${date}.yaml" >> "${tmp_folder}/logs/logs.txt"
+if [[ $? -ne 0 ]]; then
+    err=true
+fi
+
+
 # backup serverkey.asc
 docker cp passbolt_passbolt_1:/usr/share/php/passbolt/plugins/Passbolt/WebInstaller/templates/Config/passbolt.php "${tmp_folder}/${date}/passbolt-confbkp_${date}.php"
 if [[ $? -ne 0 ]]; then
