@@ -30,12 +30,12 @@ docker exec --user www-data cloud-komelt-dev_nextcloud-app-1 php occ maintenance
 
 
 # backup db to .sql
-docker exec cloud-komelt-dev_nextcloud-db-1 /usr/bin/mysqldump -u nextcloud --password="${NEXT_DB_PASS}" nextcloud > "${tmp_folder}/${date}/db_${date}.sql" 2>> "${tmp_folder}/logs/logs.txt" 
+docker exec cloud-komelt-dev_nextcloud-db-1 mysqldump --single-transactio -u nextcloud --password="${NEXT_DB_PASS}" nextcloud > "${tmp_folder}/${date}/nextcloud-sqlbkp_${date}.sql" 2>> "${tmp_folder}/logs/logs.txt" 
 if [[ $? -ne 0 ]]; then
     err=true
 else
     # if ok then upload to Backblaze bucket
-    b2 upload-file zeus-docker-backup "${tmp_folder}/${date}/db_${date}.sql" "${name}/${date}/db/db_${date}.sql" >> "${tmp_folder}/logs/logs.txt"
+    b2 upload-file zeus-docker-backup "${tmp_folder}/${date}/nextcloud-sqlbkp_${date}.sql" "${name}/${date}/nextcloud-sqlbkp_${date}.sql" >> "${tmp_folder}/logs/logs.txt"
     if [[ $? -ne 0 ]]; then
         err=true
     fi
@@ -43,23 +43,24 @@ fi
 
 
 # backup nginx.conf
-b2 upload-file zeus-docker-backup "/etc/nginx/conf.d/si.podjetni.video.conf" "${name}/${date}/nginx/nginx_si.podjetni.video_${date}.conf" >> "${tmp_folder}/logs/logs.txt"
+b2 upload-file zeus-docker-backup "/etc/nginx/conf.d/si.podjetni.video.conf" "${name}/${date}/nginx-confbkp_${date}.conf" >> "${tmp_folder}/logs/logs.txt"
 if [[ $? -ne 0 ]]; then
     err=true
 fi
 
 
-# backup nginx config folder
-zip -r "${tmp_folder}/${date}/conf_${date}.zip" "${next_base}/config" >> "${tmp_folder}/logs/logs.txt"
+# backup nextcloud folder
+zip -r "${tmp_folder}/${date}/nextcloud-dirbkp_${date}.zip" "${next_base}" >> "${tmp_folder}/logs/logs.txt"
 if [[ $? -ne 0 ]]; then
     err=true
 else
     # if ok then upload to Backblaze bucket
-    b2 upload-file zeus-docker-backup "${tmp_folder}/${date}/conf_${date}.zip" "${name}/${date}/nextcloud/conf_${date}.zip" >> "${tmp_folder}/logs/logs.txt"
+    b2 upload-file zeus-docker-backup "${tmp_folder}/${date}/nextcloud-dirbkp_${date}.zip" "${name}/${date}/nextcloud-dirbkp_${date}.zip" >> "${tmp_folder}/logs/logs.txt"
     if [[ $? -ne 0 ]]; then
         err=true
     fi
 fi
+
 
 docker exec --user www-data cloud-komelt-dev_nextcloud-app-1 php occ maintenance:mode --off
 # ------------------------------- BACKUP END
