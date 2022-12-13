@@ -39,7 +39,7 @@ fi
 
 
 # backup nginx.conf
-b2 upload-file zeus-docker-backup "/etc/nginx/conf.d/dev.komelt.passbolt.conf" "${name}/${date}/nginx-confbkp_${date}.conf" 2>> "${tmp_folder}/logs/logs.txt"
+cp "/etc/nginx/conf.d/dev.komelt.passbolt.conf" "${tmp_folder}/${date}/nginx-confbkp_${date}.conf" 2>> "${tmp_folder}/logs/logs.txt"
 if [[ $? -ne 0 ]]; then
     err=true
 fi
