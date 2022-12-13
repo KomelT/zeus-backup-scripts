@@ -55,6 +55,8 @@ fi
 # ------------------------------- SYNC FILES START
 
 # Remove directories that are older than 30 days
+cd "${tmp_folder}"
+
 find "${tmp_folder}"/* -mtime +30 -maxdepth 0 -exec basename {} \; | grep -v "logs" | xargs rm
 
 # Backblaze b2 authorize
