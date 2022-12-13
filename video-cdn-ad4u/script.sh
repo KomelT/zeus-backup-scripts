@@ -18,13 +18,6 @@ echo "" >> "${tmp_folder}/logs/logs.txt"
 
 err=false
 
-# Backblaze b2 authorize
-b2 authorize-account $BACKB_KEY_ID $BACKB_APP_KEY 2>> "${tmp_folder}/logs/logs.txt"
-if [[ $? -ne 0 ]]; then
-    err=true
-fi
-
-
 # ------------------------------- BACKUP START
 docker exec --user www-data cloud-komelt-dev_nextcloud-app-1 php occ maintenance:mode --on
 
@@ -33,17 +26,11 @@ docker exec --user www-data cloud-komelt-dev_nextcloud-app-1 php occ maintenance
 docker exec cloud-komelt-dev_nextcloud-db-1 mysqldump --single-transactio -u nextcloud --password="${NEXT_DB_PASS}" nextcloud > "${tmp_folder}/${date}/nextcloud-sqlbkp_${date}.sql" 2>> "${tmp_folder}/logs/logs.txt" 
 if [[ $? -ne 0 ]]; then
     err=true
-else
-    # if ok then upload to Backblaze bucket
-    b2 upload-file zeus-docker-backup "${tmp_folder}/${date}/nextcloud-sqlbkp_${date}.sql" "${name}/${date}/nextcloud-sqlbkp_${date}.sql" 2>> "${tmp_folder}/logs/logs.txt"
-    if [[ $? -ne 0 ]]; then
-        err=true
-    fi
 fi
 
 
 # backup nginx.conf
-b2 upload-file zeus-docker-backup "/etc/nginx/conf.d/si.podjetni.video.conf" "${name}/${date}/nginx-confbkp_${date}.conf" 2>> "${tmp_folder}/logs/logs.txt"
+cp "/etc/nginx/conf.d/si.podjetni.video.conf" "${tmp_folder}/${date}/nginx-confbkp_${date}.conf" 2>> "${tmp_folder}/logs/logs.txt"
 if [[ $? -ne 0 ]]; then
     err=true
 fi
@@ -53,17 +40,32 @@ fi
 zip -r "${tmp_folder}/${date}/nextcloud-dirbkp_${date}.zip" "${next_base}" 2>> "${tmp_folder}/logs/logs.txt"
 if [[ $? -ne 0 ]]; then
     err=true
-else
-    # if ok then upload to Backblaze bucket
-    b2 upload-file zeus-docker-backup "${tmp_folder}/${date}/nextcloud-dirbkp_${date}.zip" "${name}/${date}/nextcloud-dirbkp_${date}.zip" 2>> "${tmp_folder}/logs/logs.txt"
-    if [[ $? -ne 0 ]]; then
-        err=true
-    fi
 fi
 
 
 docker exec --user www-data cloud-komelt-dev_nextcloud-app-1 php occ maintenance:mode --off
 # ------------------------------- BACKUP END
+
+# ------------------------------- SYNC FILES START
+
+# Remove directories that are older than 30 days
+cd "${tmp_folder}"
+
+find "${tmp_folder}"/* -mtime +30 -maxdepth 0 -exec basename {} \; | grep -v "logs" | xargs rm -r {}
+
+# Backblaze b2 authorize
+b2 authorize-account $BACKB_KEY_ID $BACKB_APP_KEY 2>> "${tmp_folder}/logs/logs.txt"
+if [[ $? -ne 0 ]]; then
+    err=true
+fi
+
+# Sync local cirectory with b2 bucket
+b2 sync --delete --compareVersions none "${tmp_folder}" "b2://zeus-docker-backup/${name}/" 2>> "${tmp_folder}/logs/logs.txt"
+if [[ $? -ne 0 ]]; then
+    err=true
+fi
+
+# ------------------------------- SYNC FILES END
 
 
 echo "" >> "${tmp_folder}/logs/logs.txt"
