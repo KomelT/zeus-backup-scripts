@@ -80,7 +80,7 @@ fi
 
 
 # backup serverkey.asc
-docker cp passbolt-app-1:/usr/share/php/passbolt/plugins/Passbolt/WebInstaller/templates/Config/passbolt.php "${tmp_folder}/${date}/passbolt-confbkp_${date}.php"
+docker cp passbolt-app-1:/usr/share/php/passbolt/plugins/PassboltCe/WebInstaller/templates/Config/passbolt.php "${tmp_folder}/${date}/passbolt-confbkp_${date}.php"
 if [[ $? -ne 0 ]]; then
     err=true
 else
