@@ -19,7 +19,7 @@ echo "" >> "${tmp_folder}/logs/logs.txt"
 err=false
 
 # Backblaze b2 authorize
-b2 authorize-account $BACKB_KEY_ID $BACKB_APP_KEY >> "${tmp_folder}/logs/logs.txt"
+b2 authorize-account $BACKB_KEY_ID $BACKB_APP_KEY 2>> "${tmp_folder}/logs/logs.txt"
 if [[ $? -ne 0 ]]; then
     err=true
 fi
@@ -35,7 +35,7 @@ if [[ $? -ne 0 ]]; then
     err=true
 else
     # if ok then upload to Backblaze bucket
-    b2 upload-file zeus-docker-backup "${tmp_folder}/${date}/nextcloud-sqlbkp_${date}.sql" "${name}/${date}/nextcloud-sqlbkp_${date}.sql" >> "${tmp_folder}/logs/logs.txt"
+    b2 upload-file zeus-docker-backup "${tmp_folder}/${date}/nextcloud-sqlbkp_${date}.sql" "${name}/${date}/nextcloud-sqlbkp_${date}.sql" 2>> "${tmp_folder}/logs/logs.txt"
     if [[ $? -ne 0 ]]; then
         err=true
     fi
@@ -43,19 +43,19 @@ fi
 
 
 # backup nginx.conf
-b2 upload-file zeus-docker-backup "/etc/nginx/conf.d/si.podjetni.video.conf" "${name}/${date}/nginx-confbkp_${date}.conf" >> "${tmp_folder}/logs/logs.txt"
+b2 upload-file zeus-docker-backup "/etc/nginx/conf.d/si.podjetni.video.conf" "${name}/${date}/nginx-confbkp_${date}.conf" 2>> "${tmp_folder}/logs/logs.txt"
 if [[ $? -ne 0 ]]; then
     err=true
 fi
 
 
 # backup nextcloud folder
-zip -r "${tmp_folder}/${date}/nextcloud-dirbkp_${date}.zip" "${next_base}" >> "${tmp_folder}/logs/logs.txt"
+zip -r "${tmp_folder}/${date}/nextcloud-dirbkp_${date}.zip" "${next_base}" 2>> "${tmp_folder}/logs/logs.txt"
 if [[ $? -ne 0 ]]; then
     err=true
 else
     # if ok then upload to Backblaze bucket
-    b2 upload-file zeus-docker-backup "${tmp_folder}/${date}/nextcloud-dirbkp_${date}.zip" "${name}/${date}/nextcloud-dirbkp_${date}.zip" >> "${tmp_folder}/logs/logs.txt"
+    b2 upload-file zeus-docker-backup "${tmp_folder}/${date}/nextcloud-dirbkp_${date}.zip" "${name}/${date}/nextcloud-dirbkp_${date}.zip" 2>> "${tmp_folder}/logs/logs.txt"
     if [[ $? -ne 0 ]]; then
         err=true
     fi
