@@ -73,10 +73,10 @@ fi
 
 
 # backup docker-compose.yaml
-b2 upload-file zeus-docker-backup "/home/komelt/git-repos/boilerplates/passbolt/production.yaml" "${name}/${date}/docker-composebkp_${date}.yaml" 2>> "${tmp_folder}/logs/logs.txt"
-if [[ $? -ne 0 ]]; then
-    err=true
-fi
+# b2 upload-file zeus-docker-backup "/home/komelt/git-repos/boilerplates/passbolt/production.yaml" "${name}/${date}/docker-composebkp_${date}.yaml" 2>> "${tmp_folder}/logs/logs.txt"
+# if [[ $? -ne 0 ]]; then
+#     err=true
+# fi
 
 
 # backup serverkey.asc
