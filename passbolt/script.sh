@@ -57,7 +57,7 @@ fi
 # Remove directories that are older than 30 days
 cd "${tmp_folder}"
 
-find "${tmp_folder}"/* -mtime +30 -maxdepth 0 -exec basename {} \; | grep -v "logs" | xargs rm
+find "${tmp_folder}"/* -mtime +30 -maxdepth 0 -exec basename {} \; | grep -v "logs" | xargs rmdir
 
 # Backblaze b2 authorize
 b2 authorize-account $BACKB_KEY_ID $BACKB_APP_KEY 2>> "${tmp_folder}/logs/logs.txt"
