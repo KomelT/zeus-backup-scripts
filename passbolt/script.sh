@@ -11,14 +11,14 @@ mkdir -p "${tmp_folder}/${date}"
 
 # set-up logs
 mkdir -p "${tmp_folder}/logs"
-echo "------ ${date} ------" >> "${tmp_folder}/logs/logs.txt"
-echo "" >> "${tmp_folder}/logs/logs.txt"
+echo "------ ${date} ------" >> "${tmp_folder}/${date}/log_${date}.log"
+echo "" >> "${tmp_folder}/${date}/log_${date}.log"
 
 err=false
 
 # ------------------------------- BACKUP START
 # backup db to .sql
-docker exec -i passbolt-db-1 mysqldump -u passbolt --password="${PASSB_DB_PASSWORD}" passbolt > "${tmp_folder}/${date}/passbolt-sqlbkp_${date}.sql" 2>> "${tmp_folder}/logs/logs.txt"
+docker exec -i passbolt-db-1 mysqldump -u passbolt --password="${PASSB_DB_PASSWORD}" passbolt > "${tmp_folder}/${date}/passbolt-sqlbkp_${date}.sql" 2>> "${tmp_folder}/${date}/log_${date}.log"
 if [[ $? -ne 0 ]]; then
     err=true
 fi
@@ -39,7 +39,7 @@ fi
 
 
 # backup nginx.conf
-cp "/etc/nginx/conf.d/dev.komelt.passbolt.conf" "${tmp_folder}/${date}/nginx-confbkp_${date}.conf" 2>> "${tmp_folder}/logs/logs.txt"
+cp "/etc/nginx/conf.d/dev.komelt.passbolt.conf" "${tmp_folder}/${date}/nginx-confbkp_${date}.conf" 2>> "${tmp_folder}/${date}/log_${date}.log"
 if [[ $? -ne 0 ]]; then
     err=true
 fi
@@ -57,16 +57,16 @@ fi
 # Remove directories that are older than 30 days
 cd "${tmp_folder}"
 
-find "${tmp_folder}"/* -mtime +30 -maxdepth 0 -exec basename {} \; | grep -v "logs" | xargs rm -r {}
+find "${tmp_folder}"/* -mtime +30 -maxdepth 0 -exec basename {} \; | xargs rm -r {}
 
 # Backblaze b2 authorize
-b2 authorize-account $BACKB_KEY_ID $BACKB_APP_KEY 2>> "${tmp_folder}/logs/logs.txt"
+b2 authorize-account $BACKB_KEY_ID $BACKB_APP_KEY 2>> "${tmp_folder}/${date}/log_${date}.log"
 if [[ $? -ne 0 ]]; then
     err=true
 fi
 
 # Sync local cirectory with b2 bucket
-b2 sync --delete --compareVersions none "${tmp_folder}" "b2://zeus-docker-backup/${name}/" 2>> "${tmp_folder}/logs/logs.txt"
+b2 sync --delete --compareVersions none "${tmp_folder}" "b2://zeus-docker-backup/${name}/" 2>> "${tmp_folder}/${date}/log_${date}.log"
 if [[ $? -ne 0 ]]; then
     err=true
 fi
@@ -74,8 +74,8 @@ fi
 # ------------------------------- SYNC FILES END
 
 
-echo "" >> "${tmp_folder}/logs/logs.txt"
-echo "" >> "${tmp_folder}/logs/logs.txt"
+echo "" >> "${tmp_folder}/${date}/log_${date}.log"
+echo "" >> "${tmp_folder}/${date}/log_${date}.log"
 
 if [[ $err == "true" ]]; then
     exit 1
