@@ -3,7 +3,7 @@
 # backup name
 name="video-cdn-ad4u"
 
-next_base="/appdata/cloud-komelt-dev_nextcloud/html"
+next_base="/appdata/cloud-komelt-dev_nextcloud/html/config"
 
 date=$(date +"%y-%m-%d_%H:%M:%S")
 
@@ -37,7 +37,7 @@ fi
 
 
 # backup nextcloud folder
-zip -r "${tmp_folder}/${date}/nextcloud-dirbkp_${date}.zip" "${next_base}" 2>> "${tmp_folder}/${date}/log_${date}.log"
+zip -r "${tmp_folder}/${date}/nextcloud-confbkp_${date}.zip" "${next_base}" 2>> "${tmp_folder}/${date}/log_${date}.log"
 if [[ $? -ne 0 ]]; then
     err=true
 fi
