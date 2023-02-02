@@ -19,11 +19,11 @@ echo "" >> "${tmp_folder}/${date}/log_${date}.log"
 err=false
 
 # ------------------------------- BACKUP START
-docker exec --user www-data cloud-komelt-dev-nextcloud-1 php occ maintenance:mode --on
+docker exec --user www-data video-cdn-nextcloud-1 php occ maintenance:mode --on
 
 
 # backup db to .sql
-docker exec cloud-komelt-dev-mariadb-1 mysqldump --single-transactio -u nextcloud --password="${NEXT_DB_PASS}" nextcloud > "${tmp_folder}/${date}/nextcloud-sqlbkp_${date}.sql" 2>> "${tmp_folder}/${date}/log_${date}.log" 
+docker exec video-cdn-mariadb-1 mysqldump --single-transactio -u nextcloud --password="${NEXT_DB_PASS}" nextcloud > "${tmp_folder}/${date}/nextcloud-sqlbkp_${date}.sql" 2>> "${tmp_folder}/${date}/log_${date}.log" 
 if [[ $? -ne 0 ]]; then
     err=true
 fi
@@ -43,7 +43,7 @@ if [[ $? -ne 0 ]]; then
 fi
 
 
-docker exec --user www-data cloud-komelt-dev-nextcloud-1 php occ maintenance:mode --off
+docker exec --user www-data video-cdn-nextcloud-1 php occ maintenance:mode --off
 # ------------------------------- BACKUP END
 
 # ------------------------------- SYNC FILES START
