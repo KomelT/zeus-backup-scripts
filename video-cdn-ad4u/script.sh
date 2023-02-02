@@ -3,7 +3,7 @@
 # backup name
 name="video-cdn-ad4u"
 
-next_base="/appdata/cloud-komelt-dev/nextcloud/html"
+next_base="/appdata/video-cdn/nextcloud/html"
 
 date=$(date +"%y-%m-%d_%H:%M:%S")
 
