@@ -59,7 +59,7 @@ cd "${tmp_folder}"
 
 find "${tmp_folder}"/* -mtime +30 -maxdepth 0 -exec basename {} \; | xargs rm -r {}
 
-rsync -au "/appdata/tmp/${name}/*" -e "ssh -i ${HOME}/.ssh/id_rsa" root:192.168.1.19:"/data/${name}/" --delete >> "${tmp_folder}/log_${date}.log"
+rsync -au "/appdata/tmp/${name}/*" -e "ssh -i ${HOME}/.ssh/id_rsa" root@192.168.1.19:"/data/${name}/" --delete >> "${tmp_folder}/log_${date}.log"
 if [[ $? -ne 0 ]]; then
     err=true
 fi
