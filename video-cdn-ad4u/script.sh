@@ -18,7 +18,10 @@ echo "" >> "${tmp_folder}/${date}/log_${date}.log"
 
 err=false
 
+
+
 # ------------------------------- BACKUP START
+
 docker exec --user www-data video-cdn-nextcloud-1 php occ maintenance:mode --on
 
 
@@ -44,7 +47,10 @@ fi
 
 
 docker exec --user www-data video-cdn-nextcloud-1 php occ maintenance:mode --off
+
 # ------------------------------- BACKUP END
+
+
 
 # ------------------------------- SYNC FILES START
 
@@ -53,19 +59,13 @@ cd "${tmp_folder}"
 
 find "${tmp_folder}"/* -mtime +30 -maxdepth 0 -exec basename {} \; | xargs rm -r {}
 
-# Backblaze b2 authorize
-b2 authorize-account $BACKB_KEY_ID $BACKB_APP_KEY 2>> "${tmp_folder}/${date}/log_${date}.log"
-if [[ $? -ne 0 ]]; then
-    err=true
-fi
-
-# Sync local cirectory with b2 bucket
-b2 sync --delete --compareVersions none "${tmp_folder}" "b2://zeus-docker-backup/${name}/" 2>> "${tmp_folder}/${date}/log_${date}.log"
+rsync -au "/appdata/tmp/${name}/*" -e "ssh -i ${HOME}/.ssh/id_rsa" root:192.168.1.19:"/data/${name}/" --delete >> "${tmp_folder}/log_${date}.log"
 if [[ $? -ne 0 ]]; then
     err=true
 fi
 
 # ------------------------------- SYNC FILES END
+
 
 
 echo "" >> "${tmp_folder}/${date}/log_${date}.log"
