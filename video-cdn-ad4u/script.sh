@@ -1,7 +1,7 @@
 #!/usr/bin/bash
 
 # backup name
-name="video-cdn-ad4u"
+name="video-cdn"
 
 next_base="/appdata/video-cdn/nextcloud/html"
 
