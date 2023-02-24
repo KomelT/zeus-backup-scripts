@@ -1,9 +1,9 @@
 #!/usr/bin/bash
 
-# backup name
+# service name
 name="video-cdn"
 
-next_base="/appdata/video-cdn/nextcloud/html"
+nextcloud_location="/appdata/video-cdn/nextcloud/html"
 
 date=$(date +"%y-%m-%d_%H:%M:%S")
 
@@ -23,7 +23,7 @@ docker exec --user www-data video-cdn-nextcloud-1 php occ maintenance:mode --on
 
 
 # backup db to .sql
-docker exec video-cdn-mariadb-1 mysqldump --single-transactio -u nextcloud --password="${NEXT_DB_PASS}" nextcloud > "${tmp_folder}/${date}/nextcloud-sqlbkp_${date}.sql" 2>> "${tmp_folder}/${date}/log_${date}.log" 
+docker exec video-cdn-mariadb-1 mysqldump --single-transactio -u nextcloud --password="${NEXTCLOUD_DB_PASS}" nextcloud > "${tmp_folder}/${date}/nextcloud-sqlbkp_${date}.sql" 2>> "${tmp_folder}/${date}/log_${date}.log" 
 if [[ $? -ne 0 ]]; then
     err=true
 fi
@@ -37,7 +37,7 @@ fi
 
 
 # backup nextcloud folder
-zip -r "${tmp_folder}/${date}/nextcloud-dirbkp_${date}.zip" "${next_base}" 2>> "${tmp_folder}/${date}/log_${date}.log"
+zip -r "${tmp_folder}/${date}/nextcloud-dirbkp_${date}.zip" "${nextcloud_location}" 2>> "${tmp_folder}/${date}/log_${date}.log"
 if [[ $? -ne 0 ]]; then
     err=true
 fi
