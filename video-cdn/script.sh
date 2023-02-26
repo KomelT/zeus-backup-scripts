@@ -33,14 +33,14 @@ fi
 
 
 # backup nginx.conf
-cp "/etc/nginx/conf.d/si.podjetni.video.conf" "${tmp_folder}/${date}/nginx-confbkp_${date}.conf" 2>> "${tmp_folder}/${date}/log/${date}.log"
+cp "/etc/nginx/conf.d/si.podjetni.video.conf" "${tmp_folder}/${date}/nginx-confbkp_${date}.conf" 2>> "${tmp_folder}/logs/${date}.log"
 if [[ $? -ne 0 ]]; then
     err=true
 fi
 
 
 # backup nextcloud folder
-zip -r "${tmp_folder}/${date}/nextcloud-dirbkp_${date}.zip" "${nextcloud_location}" 2>> "${tmp_folder}/${date}/log/${date}.log"
+zip -r "${tmp_folder}/${date}/nextcloud-dirbkp_${date}.zip" "${nextcloud_location}" 2>> "${tmp_folder}/logs/${date}.log"
 if [[ $? -ne 0 ]]; then
     err=true
 fi
