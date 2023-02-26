@@ -80,8 +80,6 @@ fi
 
 day=$(date -d "2022-07-17" +%u)
 
-echo $day
-
 if [ "$day" == "7" ]; then
     ssh -i "${HOME}/.ssh/id_rsa" root@192.168.1.19 mkdir -p "/data/${name}/data/weekly/"
 
