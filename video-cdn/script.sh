@@ -67,6 +67,8 @@ cd "${tmp_folder}"
 
 find "${tmp_folder}"/* -mtime +30 -maxdepth 0 -exec basename {} \; | xargs rm -r {}
 
+ssh -i "${HOME}/.ssh/id_rsa" root@192.168.1.19 mkdir -p "/data/${name}/data/daily/"
+
 rsync -au "/appdata/tmp/${name}/" -e "ssh -i ${HOME}/.ssh/id_rsa" root@192.168.1.19:"/data/${name}/" --delete 2>> "${tmp_folder}/logs/${date}.log"
 if [[ $? -ne 0 ]]; then
     err=true
@@ -88,8 +90,6 @@ if [ "$day" == "7" ]; then
         err=true
     fi
 else
-    ssh -i "${HOME}/.ssh/id_rsa" root@192.168.1.19 mkdir -p "/data/${name}/data/daily/"
-
     rsync -au "${nextcloud_location}/data" -e "ssh -i ${HOME}/.ssh/id_rsa" root@192.168.1.19:"/data/${name}/data/daily/" --delete 2>> "${tmp_folder}/logs/${date}.log"
     if [[ $? -ne 0 ]]; then
         err=true
