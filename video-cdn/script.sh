@@ -80,6 +80,8 @@ fi
 
 day=$(date -d "2022-07-17" +%u)
 
+echo $day
+
 if [ "$day" == "0" ]; then
     rsync -au "${nextcloud_location}/data" -e "ssh -i ${HOME}/.ssh/id_rsa" root@192.168.1.19:"/data/${name}/data/weekly/" --delete 2>> "${tmp_folder}/logs/${date}.log"
     if [[ $? -ne 0 ]]; then
