@@ -91,7 +91,7 @@ if [ "$day" == "7" ]; then
         err=true
     fi
 
-    rsync -au "${nextcloud_location}/data" -e "ssh -i ${HOME}/.ssh/id_rsa" root@192.168.1.19:"/data/${name}/data/weekly/" --delete 2>> "${tmp_folder}/logs/${date}.log"
+    rsync -au "${nextcloud_location}/data" -e "ssh -i ${HOME}/.ssh/id_rsa" root@192.168.1.19:"/data/${name}/data/weekly/" 2>> "${tmp_folder}/logs/${date}.log"
     if [[ $? -ne 0 ]]; then
         err=true
     fi
@@ -101,7 +101,7 @@ else
         err=true
     fi
 
-    rsync -au "${nextcloud_location}/data" -e "ssh -i ${HOME}/.ssh/id_rsa" root@192.168.1.19:"/data/${name}/data/daily/" --delete 2>> "${tmp_folder}/logs/${date}.log"
+    rsync -au "${nextcloud_location}/data" -e "ssh -i ${HOME}/.ssh/id_rsa" root@192.168.1.19:"/data/${name}/data/daily/" 2>> "${tmp_folder}/logs/${date}.log"
     if [[ $? -ne 0 ]]; then
         err=true
     fi
