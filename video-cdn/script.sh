@@ -26,21 +26,21 @@ docker exec --user www-data video-cdn-nextcloud-1 php occ maintenance:mode --on
 
 
 # backup db to .sql
-docker exec video-cdn-mariadb-1 mysqldump --single-transactio -u nextcloud --password="${NEXTCLOUD_DB_PASS}" nextcloud > "${tmp_folder}/${date}/nextcloud-sqlbkp_${date}.sql" 2>> "${tmp_folder}/logs/${date}.log" 
+docker exec video-cdn-mariadb-1 mysqldump --single-transactio -u nextcloud --password="${NEXTCLOUD_DB_PASS}" nextcloud > "${tmp_folder}/${date}/nextcloud-sqlbkp.sql" 2>> "${tmp_folder}/logs/${date}.log" 
 if [[ $? -ne 0 ]]; then
     err=true
 fi
 
 
 # backup nginx.conf
-cp "/etc/nginx/conf.d/si.podjetni.video.conf" "${tmp_folder}/${date}/nginx-confbkp_${date}.conf" 2>> "${tmp_folder}/logs/${date}.log"
+cp "/etc/nginx/conf.d/si.podjetni.video.conf" "${tmp_folder}/${date}/nginx-confbkp.conf" 2>> "${tmp_folder}/logs/${date}.log"
 if [[ $? -ne 0 ]]; then
     err=true
 fi
 
 
 # backup nextcloud folder
-zip -r "${tmp_folder}/${date}/nextcloud-dirbkp_${date}.zip" "${nextcloud_location}" 2>> "${tmp_folder}/logs/${date}.log"
+zip -r "${tmp_folder}/${date}/nextcloud-dirbkp.zip" "${nextcloud_location}" 2>> "${tmp_folder}/logs/${date}.log"
 if [[ $? -ne 0 ]]; then
     err=true
 fi
