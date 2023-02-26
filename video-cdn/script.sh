@@ -10,7 +10,6 @@ date=$(date +"%y-%m-%d_%H:%M:%S")
 # create necessary folders
 tmp_folder="/appdata/tmp/${name}"
 mkdir -p "${tmp_folder}/${date}"
-mkdir "${nextcloud_location}/data"
 
 # set-up logs
 mkdir -p "${tmp_folder}/logs"
@@ -84,11 +83,15 @@ day=$(date -d "2022-07-17" +%u)
 echo $day
 
 if [ "$day" == "0" ]; then
+    ssh -i "${HOME}/.ssh/id_rsa" root@192.168.1.19 mkdir -p "/data/${name}/data/weekly/"
+
     rsync -au "${nextcloud_location}/data" -e "ssh -i ${HOME}/.ssh/id_rsa" root@192.168.1.19:"/data/${name}/data/weekly/" --delete 2>> "${tmp_folder}/logs/${date}.log"
     if [[ $? -ne 0 ]]; then
         err=true
     fi
 else
+    ssh -i "${HOME}/.ssh/id_rsa" root@192.168.1.19 mkdir -p "/data/${name}/data/daily/"
+
     rsync -au "${nextcloud_location}/data" -e "ssh -i ${HOME}/.ssh/id_rsa" root@192.168.1.19:"/data/${name}/data/daily/" --delete 2>> "${tmp_folder}/logs/${date}.log"
     if [[ $? -ne 0 ]]; then
         err=true
