@@ -26,14 +26,17 @@ docker exec --user www-data video-cdn-nextcloud-1 php occ maintenance:mode --on
 
 
 # backup db to .sql
-docker exec video-cdn-mariadb-1 mysqldump --single-transactio -u nextcloud --password="${NEXTCLOUD_DB_PASS}" nextcloud > "${tmp_folder}/${date}/nextcloud-sqlbkp.sql" 2>> "${tmp_folder}/logs/${date}.log" 
+docker exec video-cdn-mariadb-1 mysqldump --single-transaction -u nextcloud --password="${NEXTCLOUD_DB_PASS}" nextcloud > "${tmp_folder}/${date}/nextcloud-sqlbkp.sql" 2>> "${tmp_folder}/logs/${date}.log" 
 if [[ $? -ne 0 ]]; then
     err=true
 fi
 
 
 # backup nginx.conf
-cp "/etc/nginx/conf.d/si.podjetni.video.conf" "${tmp_folder}/${date}/nginx-confbkp.conf" 2>> "${tmp_folder}/logs/${date}.log"
+mkdir "${tmp_folder}/${date}/nginx/"
+cd /etc/nginx/conf.d/
+
+find . -name "video-cdn_*" -exec cp {} "${tmp_folder}/${date}/nginx/" \; 2>> "${tmp_folder}/logs/${date}.log"
 if [[ $? -ne 0 ]]; then
     err=true
 fi
