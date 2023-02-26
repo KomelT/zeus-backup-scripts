@@ -3,7 +3,7 @@
 # service name
 name="video-cdn"
 
-nextcloud_location="/appdata/video-cdn/nextcloud/html"
+nextcloud_location="/appdata/video-cdn/nextcloud"
 
 date=$(date +"%y-%m-%d_%H:%M:%S")
 
@@ -45,7 +45,7 @@ fi
 
 
 # backup nextcloud folder
-zip -r "${tmp_folder}/${date}/nextcloud-dirbkp.zip" "${nextcloud_location}" 2>> "${tmp_folder}/logs/${date}.log"
+zip -r "${tmp_folder}/${date}/nextcloud-dirbkp.zip" "${nextcloud_location}/html" 2>> "${tmp_folder}/logs/${date}.log"
 if [[ $? -ne 0 ]]; then
     err=true
 fi
@@ -65,17 +65,34 @@ fi
 # Remove directories that are older than 30 days
 cd "${tmp_folder}"
 
-find "${tmp_folder}"/* -mtime +30 -maxdepth 0 -exec basename {} \; | xargs rm -r {} 2>> "${tmp_folder}/logs/${date}.log"
-if [[ $? -ne 0 ]]; then
-    err=true
-fi
+find "${tmp_folder}"/* -mtime +30 -maxdepth 0 -exec basename {} \; | xargs rm -r {}
 
-rsync -au "/appdata/tmp/${name}/" -e "ssh -i ${HOME}/.ssh/id_rsa" root@192.168.1.19:"/data/${name}/" --delete >> "${tmp_folder}/logs/${date}.log"
+rsync -au "/appdata/tmp/${name}/" -e "ssh -i ${HOME}/.ssh/id_rsa" root@192.168.1.19:"/data/${name}/" --delete 2>> "${tmp_folder}/logs/${date}.log"
 if [[ $? -ne 0 ]]; then
     err=true
 fi
 
 # ------------------------------- SYNC FILES END
+
+
+
+# ------------------------------- SYNC BIG FILES START
+
+day=$(date -d "2022-07-17" +%u)
+
+if [ "$day" == "0" ]; then
+    rsync -au "${nextcloud_location}/data" -e "ssh -i ${HOME}/.ssh/id_rsa" root@192.168.1.19:"/data/${name}/data/weekly/" --delete 2>> "${tmp_folder}/logs/${date}.log"
+    if [[ $? -ne 0 ]]; then
+        err=true
+    fi
+else
+    rsync -au "${nextcloud_location}/data" -e "ssh -i ${HOME}/.ssh/id_rsa" root@192.168.1.19:"/data/${name}/data/daily/" --delete 2>> "${tmp_folder}/logs/${date}.log"
+    if [[ $? -ne 0 ]]; then
+        err=true
+    fi
+fi
+
+# ------------------------------- SYNC BIG FILES END
 
 
 
