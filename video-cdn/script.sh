@@ -13,8 +13,8 @@ mkdir -p "${tmp_folder}/${date}"
 
 # set-up logs
 mkdir -p "${tmp_folder}/logs"
-echo "------ ${date} ------" >> "${tmp_folder}/${date}/log/${date}.log"
-echo "" >> "${tmp_folder}/${date}/log/${date}.log"
+echo "------ ${date} ------" >> "${tmp_folder}/logs/${date}.log"
+echo "" >> "${tmp_folder}/logs/${date}.log"
 
 err=false
 
@@ -26,7 +26,7 @@ docker exec --user www-data video-cdn-nextcloud-1 php occ maintenance:mode --on
 
 
 # backup db to .sql
-docker exec video-cdn-mariadb-1 mysqldump --single-transactio -u nextcloud --password="${NEXTCLOUD_DB_PASS}" nextcloud > "${tmp_folder}/${date}/nextcloud-sqlbkp_${date}.sql" 2>> "${tmp_folder}/${date}/log/${date}.log" 
+docker exec video-cdn-mariadb-1 mysqldump --single-transactio -u nextcloud --password="${NEXTCLOUD_DB_PASS}" nextcloud > "${tmp_folder}/${date}/nextcloud-sqlbkp_${date}.sql" 2>> "${tmp_folder}/logs/${date}.log" 
 if [[ $? -ne 0 ]]; then
     err=true
 fi
@@ -59,7 +59,7 @@ cd "${tmp_folder}"
 
 find "${tmp_folder}"/* -mtime +30 -maxdepth 0 -exec basename {} \; | xargs rm -r {}
 
-rsync -au "/appdata/tmp/${name}/" -e "ssh -i ${HOME}/.ssh/id_rsa" root@192.168.1.19:"/data/${name}/" --delete >> "${tmp_folder}/log_${date}.log"
+rsync -au "/appdata/tmp/${name}/" -e "ssh -i ${HOME}/.ssh/id_rsa" root@192.168.1.19:"/data/${name}/" --delete >> "${tmp_folder}/logs/${date}.log"
 if [[ $? -ne 0 ]]; then
     err=true
 fi
@@ -68,8 +68,8 @@ fi
 
 
 
-echo "" >> "${tmp_folder}/${date}/log/${date}.log"
-echo "" >> "${tmp_folder}/${date}/log/${date}.log"
+echo "" >> "${tmp_folder}/logs/${date}.log"
+echo "" >> "${tmp_folder}/logs/${date}.log"
 
 if [[ $err == "true" ]]; then
     exit 1
