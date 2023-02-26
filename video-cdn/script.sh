@@ -10,6 +10,7 @@ date=$(date +"%y-%m-%d_%H:%M:%S")
 # create necessary folders
 tmp_folder="/appdata/tmp/${name}"
 mkdir -p "${tmp_folder}/${date}"
+mkdir "${nextcloud_location}/data"
 
 # set-up logs
 mkdir -p "${tmp_folder}/logs"
