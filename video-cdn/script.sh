@@ -22,8 +22,10 @@ err=false
 
 # ------------------------------- BACKUP START
 
-docker exec --user www-data video-cdn-nextcloud-1 php occ maintenance:mode --on
-
+docker exec --user www-data video-cdn-nextcloud-1 php occ maintenance:mode --on 2>> "${tmp_folder}/logs/${date}.log"
+if [[ $? -ne 0 ]]; then
+    err=true
+fi
 
 # backup db to .sql
 docker exec video-cdn-mariadb-1 mysqldump --single-transaction -u nextcloud --password="${NEXTCLOUD_DB_PASS}" nextcloud > "${tmp_folder}/${date}/nextcloud-sqlbkp.sql" 2>> "${tmp_folder}/logs/${date}.log" 
@@ -49,7 +51,10 @@ if [[ $? -ne 0 ]]; then
 fi
 
 
-docker exec --user www-data video-cdn-nextcloud-1 php occ maintenance:mode --off
+docker exec --user www-data video-cdn-nextcloud-1 php occ maintenance:mode --off 2>> "${tmp_folder}/logs/${date}.log"
+if [[ $? -ne 0 ]]; then
+    err=true
+fi
 
 # ------------------------------- BACKUP END
 
@@ -60,7 +65,10 @@ docker exec --user www-data video-cdn-nextcloud-1 php occ maintenance:mode --off
 # Remove directories that are older than 30 days
 cd "${tmp_folder}"
 
-find "${tmp_folder}"/* -mtime +30 -maxdepth 0 -exec basename {} \; | xargs rm -r {}
+find "${tmp_folder}"/* -mtime +30 -maxdepth 0 -exec basename {} \; | xargs rm -r {} 2>> "${tmp_folder}/logs/${date}.log"
+if [[ $? -ne 0 ]]; then
+    err=true
+fi
 
 rsync -au "/appdata/tmp/${name}/" -e "ssh -i ${HOME}/.ssh/id_rsa" root@192.168.1.19:"/data/${name}/" --delete >> "${tmp_folder}/logs/${date}.log"
 if [[ $? -ne 0 ]]; then
