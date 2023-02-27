@@ -36,4 +36,4 @@ content="${content}${tmp}"
 
 echo "${content}]}" >> "${tmp_folder}/logs.txt"
 
-/usr/bin/curl -i -H "Content-Type: application/json" -d  "${content}]}" "${DISC_WEBHOOK_URL}" >> "${tmp_folder}/logs.txt"
+/usr/bin/curl -i -H "Content-Type: application/json" -d  "${content}]}" "${DISCORD_WEBHOOK_URL}" >> "${tmp_folder}/logs.txt"
