@@ -83,7 +83,7 @@ fi
 
 # ------------------------------- SYNC BIG FILES START
 
-day=$(date -d "2022-07-17" +%u)
+day=$(date +%u)
 
 if [ "$day" == "7" ]; then
     ssh -i "${HOME}/.ssh/id_rsa" root@192.168.1.18 mkdir -p "/data/${name}/data/weekly/" 2>> "${tmp_folder}/logs/${date}.log"
