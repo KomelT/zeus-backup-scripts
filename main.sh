@@ -12,7 +12,7 @@ content='{"content": "**'$(date +"%y-%m-%d %H:%M:%S")'**", "embeds": ['
 tmp=""
 
 
-/root/zeus-backup-scripts/video-cdn/script.sh
+./video-cdn/script.sh
 if [[ $? -ne 0 ]]; then
     echo "video-cdn/script.sh exited with a non zero exit code" >> "${tmp_folder}/logs.txt"
     tmp='{"title": "video-cdn", "color": 16711680}'
@@ -23,7 +23,7 @@ fi
 content="${content}${tmp},"
 
 
-/root/zeus-backup-scripts/passbolt/script.sh
+./passbolt/script.sh
 if [[ $? -ne 0 ]]; then
     echo "passbolt/script.sh exited with a non zero exit code" >> "${tmp_folder}/logs.txt"
     tmp='{"title": "passbolt", "color": 16711680}'
