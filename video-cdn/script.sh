@@ -28,7 +28,7 @@ if [[ $? -ne 0 ]]; then
 fi
 
 # backup db to .sql
-docker exec video-cdn-mariadb-1 mysqldump --single-transaction -u nextcloud --password="${NEXTCLOUD_DB_PASS}" nextcloud > "${tmp_folder}/${date}/nextcloud-sqlbkp.sql" 2>> "${tmp_folder}/logs/${date}.log" 
+docker exec video-cdn-mariadb-1 mysqldump --single-transaction -u nextcloud --password="${NEXTCLOUD_DB_PASSWORD}" nextcloud > "${tmp_folder}/${date}/nextcloud-sqlbkp.sql" 2>> "${tmp_folder}/logs/${date}.log" 
 if [[ $? -ne 0 ]]; then
     err=true
 fi
