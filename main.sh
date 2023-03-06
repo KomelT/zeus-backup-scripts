@@ -31,7 +31,7 @@ else
     echo "passbolt/script.sh exited with a zero exit code" >> "${tmp_folder}/logs.txt"
     tmp='{"title": "passbolt", "color": 65280}'
 fi
-content="${content}${tmp}"
+content="${content}${tmp},"
 
 
 /root/git-repos/zeus-backup-scripts/portainer/script.sh
