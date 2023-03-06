@@ -34,6 +34,17 @@ fi
 content="${content}${tmp}"
 
 
+/root/git-repos/zeus-backup-scripts/portainer/script.sh
+if [[ $? -ne 0 ]]; then
+    echo "portainer/script.sh exited with a non zero exit code" >> "${tmp_folder}/logs.txt"
+    tmp='{"title": "portainer", "color": 16711680}'
+else
+    echo "portainer/script.sh exited with a zero exit code" >> "${tmp_folder}/logs.txt"
+    tmp='{"title": "portainer", "color": 65280}'
+fi
+content="${content}${tmp}"
+
+
 echo "${content}]}" >> "${tmp_folder}/logs.txt"
 
 /usr/bin/curl -i -H "Content-Type: application/json" -d  "${content}]}" "${DISCORD_WEBHOOK_URL}" >> "${tmp_folder}/logs.txt"
