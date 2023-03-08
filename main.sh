@@ -42,6 +42,17 @@ else
     echo "portainer/script.sh exited with a zero exit code" >> "${tmp_folder}/logs.txt"
     tmp='{"title": "portainer", "color": 65280}'
 fi
+content="${content}${tmp},"
+
+
+/root/git-repos/zeus-backup-scripts/grafana/script.sh
+if [[ $? -ne 0 ]]; then
+    echo "grafana/script.sh exited with a non zero exit code" >> "${tmp_folder}/logs.txt"
+    tmp='{"title": "grafana", "color": 16711680}'
+else
+    echo "grafana/script.sh exited with a zero exit code" >> "${tmp_folder}/logs.txt"
+    tmp='{"title": "grafana", "color": 65280}'
+fi
 content="${content}${tmp}"
 
 
